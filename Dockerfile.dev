@@ -1,0 +1,23 @@
+# author: sanghyun
+# For Spring Boot 3.2.0
+# Run on Java 21
+# Using Gradle for build
+# Package as a jar file
+
+# FROM eclipse-temurin:21-jdk-alpine
+FROM gradle:jdk21-alpine
+
+WORKDIR /app
+
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle .
+COPY settings.gradle .
+
+# src directory already set by compose.yaml spring.volumes
+# COPY src src
+
+EXPOSE 8080
+
+# when bootRun is used, it will automatically build the project
+ENTRYPOINT [ "./gradlew", "bootRun","-Dspring.profiles.active=docker-dev"]

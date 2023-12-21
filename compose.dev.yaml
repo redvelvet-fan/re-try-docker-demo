@@ -1,0 +1,44 @@
+version: '3.8'
+services:
+  postgresql:
+    container_name: postgresql
+    image: postgres:latest
+    restart: always
+    env_file:
+      - .env.docker-dev
+    networks:
+      - backend
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER:
+      POSTGRES_PASSWORD:
+      POSTGRES_DB:
+    volumes:
+      - postgre-data:/var/lib/postgresql/data
+  spring:
+    container_name: spring-server
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    env_file:
+      - .env.docker-dev
+    networks:
+      - backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgresql
+    environment:
+      DB_HOST:
+      DB_PORT:
+      DB_NAME:
+      DB_USER:
+      DB_PASSWORD:
+    volumes:
+      - ./src:/app/src
+volumes:
+  postgre-data:
+networks:
+  backend:
+    driver: bridge
